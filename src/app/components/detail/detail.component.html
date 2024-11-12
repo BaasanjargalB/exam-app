@@ -1,0 +1,86 @@
+<div class="flex">
+  <div class="flex flex-col w-64 px-4 tex-gray-900 custom-navbar">
+    <nav aria-label="Page navigation" class="p-7">
+      <ul class="flex flex-wrap gap-3">
+        <li
+          *ngFor="let question of arr"
+          (click)="onPageClick(question)"
+          class="hover: cursor-pointer"
+        >
+          <a [class]="pageIndex === question ? activePage : regularPage">{{
+            question
+          }}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <div>
+    <div class="flex flex-col justify-between h-screen main-test-area">
+      <div>
+        <div class="flex items-center m-6">
+          <div class="border-2 border-primary-color p-2 rounded-md">
+            <h2 class="text-xl text-primary-color font-bold p-1">
+              СОРИЛГО - {{ examId }}
+            </h2>
+          </div>
+          <div class="flex-grow border-b border-primary-color"></div>
+          <div class="border-2 border-primary-color p-2 rounded-md">
+            <h2 class="text-xl text-primary-color font-bold p-1">
+              {{ formattedTime }}
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="mb-10 px-24 flex gap-5">
+          <span
+            class="flex items-center justify-center px-4 h-10 w-12 border bg-white border-primary-color text-primary-color text-lg rounded-md"
+            >{{ pageIndex }}</span
+          >
+          <span class="text-wrap">{{ questionText }}</span>
+        </div>
+        <div class="px-24">
+          <ul>
+            <li
+              *ngFor="let answer of answers; let i = index"
+              class="flex justify-start custom-li w-full ml-12 py-2"
+            >
+              <div class="flex items-center ps-3">
+                <input
+                  [id]="'horizontal-list-radio-license-' + i"
+                  type="radio"
+                  [value]="answer"
+                  name="list-radio"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-600 dark:border-gray-500 focus:outline-none focus:box-shadow-none"
+                  (keydown)="preventArrowKeys($event)"
+                />
+                <label
+                  [for]="'horizontal-list-radio-license-' + i"
+                  class="w-full py-3 ms-2 text-lg"
+                  >{{ answers[i] }}
+                </label>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between mx-6 mb-5">
+          <a
+            (click)="onPreviousClick()"
+            class="hover: cursor-pointer flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-primary-color border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+          >
+            Previous
+          </a>
+
+          <a
+            (click)="onNextClick()"
+            class="hover: cursor-pointer flex items-center justify-center px-4 h-10 ms-3 text-base font-medium text-white bg-primary-color border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+          >
+            Next
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

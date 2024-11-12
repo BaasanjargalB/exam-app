@@ -16,7 +16,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { StepperModule } from 'primeng/stepper';
 import { HttpClientModule } from '@angular/common/http';
-// import { ExamTimerComponent } from './exam-timer/exam-timer.component';
+import { MathJaxParagraphComponent } from './components/math-jax-paragraph/math-jax-paragraph.component';
 
 @NgModule({
   declarations: [
@@ -28,10 +28,9 @@ import { HttpClientModule } from '@angular/common/http';
     LoginComponent,
     RegisterComponent,
     SidebarComponent,
-    // ExamTimerComponent,
+    MathJaxParagraphComponent,
   ],
   imports: [
-    // RouterModule.forRoot([]),
     BrowserModule,
     AppRoutingModule,
     FormsModule,

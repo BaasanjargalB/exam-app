@@ -99,4 +99,26 @@ export class DetailComponent implements OnInit, OnDestroy {
   private padTime(time: number): string {
     return time < 10 ? '0' + time : time.toString();
   }
+
+  replaceDollarPairsRecursively(input: string): string {
+    const firstIndex = input.indexOf('$');
+    const secondIndex = input.indexOf('$', firstIndex + 1);
+
+    if (firstIndex === -1 || secondIndex === -1 || firstIndex === secondIndex) {
+      return input;
+    }
+
+    let markedString =
+      input.slice(0, firstIndex) +
+      '[OPEN]' +
+      input.slice(firstIndex + 1, secondIndex) +
+      '[CLOSE]' +
+      input.slice(secondIndex + 1);
+
+    markedString = markedString
+      .replace('[OPEN]', '\\(')
+      .replace('[CLOSE]', '\\)');
+
+    return this.replaceDollarPairsRecursively(markedString);
+  }
 }

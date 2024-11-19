@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex" [formGroup]="examForm">
   <div class="flex flex-col w-64 px-4 tex-gray-900 custom-navbar">
     <nav aria-label="Page navigation" class="p-7">
       <ul class="flex flex-wrap gap-3">
@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div formArrayName="questions">
         <div class="mb-10 px-24 flex gap-5">
           <span
             class="flex items-center justify-center px-4 h-10 w-12 border bg-white border-primary-color text-primary-color text-lg rounded-md"
@@ -44,7 +44,7 @@
           ></span>
         </div>
         <div class="px-24">
-          <ul>
+          <ul [formGroup]="arrFormGroup">
             <li
               *ngFor="let answer of answers; let i = index"
               class="flex justify-start custom-li w-full ml-12 py-2"
@@ -54,7 +54,8 @@
                   [id]="'horizontal-list-radio-license-' + i"
                   type="radio"
                   [value]="answer"
-                  name="list-radio"
+                  formControlName="selectedAnswer"
+                  name="selectedAnswer"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-600 dark:border-gray-500 focus:outline-none focus:box-shadow-none"
                   (keydown)="preventArrowKeys($event)"
                 />
@@ -84,7 +85,7 @@
             (click)="onNextClick()"
             class="hover: cursor-pointer flex items-center justify-center px-4 h-10 ms-3 text-base font-medium text-white bg-primary-color border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
           >
-            Next
+            {{this.exam ? this.pageIndex == this.exam.questions.length ? 'End' : 'Next' : 'Next' }}
           </a>
         </div>
       </div>

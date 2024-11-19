@@ -8,7 +8,11 @@ import { AuthenticationService } from '../../services/authentication.service';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  username: String = ''
   constructor(private router: Router, private auth: AuthenticationService) {}
+
+  ngOnInit() {
+  }
 
   onLogout() {
     this.auth.logOut().subscribe({

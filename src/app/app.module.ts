@@ -10,13 +10,28 @@ import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { StepperModule } from 'primeng/stepper';
 import { HttpClientModule } from '@angular/common/http';
 import { MathJaxParagraphComponent } from './components/math-jax-paragraph/math-jax-paragraph.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BadgeModule } from 'primeng/badge';
+import { FileUploadModule } from 'primeng/fileupload';
+import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { ExamCreateComponent } from './components/exam-create/exam-create.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { AccordionModule } from 'primeng/accordion';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { SplitterModule } from 'primeng/splitter';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @NgModule({
   declarations: [
@@ -29,6 +44,8 @@ import { MathJaxParagraphComponent } from './components/math-jax-paragraph/math-
     RegisterComponent,
     SidebarComponent,
     MathJaxParagraphComponent,
+    SafeHtmlPipe,
+    ExamCreateComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,10 +53,25 @@ import { MathJaxParagraphComponent } from './components/math-jax-paragraph/math-
     FormsModule,
     StepperModule,
     HttpClientModule,
+    ToastModule,
+    BrowserAnimationsModule,
+    BadgeModule,
+    ReactiveFormsModule,
+    FileUploadModule,
+    InputTextModule,
+    InputNumberModule,
+    AccordionModule,
+    ButtonModule,
+    RadioButtonModule,
+    DropdownModule,
+    SplitterModule,
+    ScrollPanelModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
   ],
-  providers: [],
+  providers: [
+    MessageService,
+  ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

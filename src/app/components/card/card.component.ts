@@ -8,12 +8,17 @@ import { Router } from '@angular/router';
 })
 export class CardComponent {
   @Input() exam: any;
+  @Input() badgeValue: number = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   onGetDetail() {
-    this.router.navigate(['/details'], {
-      queryParams: { id: this.exam['_id'] },
-    });
+    if (this.exam['_id']) {
+      this.router.navigate(['/details'], {
+        queryParams: { id: this.exam['_id'] },
+      });
+    } else {
+      this.router.navigate(['/exam']);
+    }
   }
 }

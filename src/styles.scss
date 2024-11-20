@@ -12,3 +12,15 @@
   @tailwind utilities;
 }
 @import "primeicons/primeicons.css";
+
+.unanswered {
+  border-bottom: 2px solid black;
+  border-radius: 8px
+}
+
+.incorrect {
+  border-bottom: 2px solid red;
+  border-radius: 8px
+}
+
+$--primary-color: #7ED4AD;

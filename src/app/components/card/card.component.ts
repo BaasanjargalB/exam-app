@@ -8,9 +8,13 @@ import { Router } from '@angular/router';
 })
 export class CardComponent {
   @Input() exam: any;
-  @Input() badgeValue: number = 0;
+  @Input() badgeValue: number | null = null;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    console.log(this.badgeValue);
+  }
 
   onGetDetail() {
     if (this.exam['_id']) {

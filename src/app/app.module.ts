@@ -32,6 +32,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SplitterModule } from 'primeng/splitter';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { DialogModule } from 'primeng/dialog';
+import { StatisticComponent } from './components/statistic/statistic.component';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -46,6 +49,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     MathJaxParagraphComponent,
     SafeHtmlPipe,
     ExamCreateComponent,
+    StatisticComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,6 +70,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     DropdownModule,
     SplitterModule,
     ScrollPanelModule,
+    DialogModule,
+    ChartModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
   ],

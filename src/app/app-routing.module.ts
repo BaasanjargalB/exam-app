@@ -10,6 +10,8 @@ import { authGuard } from './guards/auth.guard';
 import { leaveExamGuard } from './guards/leave-exam.guard';
 import { adminGuard } from './guards/admin.guard';
 import { ExamCreateComponent } from './components/exam-create/exam-create.component';
+import { StatisticComponent } from './components/statistic/statistic.component';
+import { statisticResolver } from './resolvers/statistic.resolver';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [authGuard] },
@@ -23,6 +25,7 @@ const routes: Routes = [
     canDeactivate: [leaveExamGuard],
   },
   { path: 'exam', component: ExamCreateComponent, canActivate: [adminGuard] },
+  { path: 'statistic', component: StatisticComponent, resolve: { statistic: statisticResolver } },
 ];
 
 @NgModule({

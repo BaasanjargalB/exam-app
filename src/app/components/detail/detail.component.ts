@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { DetailService } from '../../services/detail.service';
+import { Auth } from '@angular/fire/auth';
 import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
@@ -18,7 +20,6 @@ export class DetailComponent implements OnInit, OnDestroy {
   regularPage: string =
     'flex items-center justify-center px-4 h-10 leading-tight text-white hover:text-white w-12 rounded-md';
   arr: number[] = [];
-  examId: number = 0;
   answers: string[] = [];
   exam: any;
   questionText: string = '';
@@ -28,13 +29,19 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   isExamEnded: boolean = false;
   isAdmin: boolean = false;
+  attempt: any;
+  isReview: boolean = false;
+  isVisible: boolean = false;
+  answerString: String = ''
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private msg: MessageService,
-    private auth: AuthenticationService,
+    private auth: Auth,
+    private authService: AuthenticationService,
+    private service: DetailService,
   ) {
     this.examForm = this.fb.group({
       _id: '',
@@ -45,18 +52,40 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const data = this.route.snapshot.data;
-    this.exam = data['exam'];
+    this.exam = data['exam']['exam'];
+    this.attempt = data['exam']['userAttempt']
+    this.timeLeft = this.exam.duration * 60;
     this.examForm.patchValue(this.exam);
-    this.populateQuestions();
     this.arr = this.exam.questions.map((x: any, i: any) => ++i);
     this.questionText = this.exam.questions[0].questionText;
     this.answers = this.exam.questions[0].choices;
 
-    this.startTimer();
+    if (this.authService.getUserRole() === 'admin') {
+      this.adminStart();
+    } else {
+      this.studentStart();
+    }
   }
 
   ngOnDestroy(): void {
     clearInterval(this.timerInterval);
+  }
+
+  adminStart() {
+    this.populateQuestions(false);
+    this.isAdmin = true;
+
+  }
+
+  studentStart() {
+    if (this.attempt === null) {
+      this.populateQuestions(false);
+      this.startTimer();
+    } else {
+      this.isReview = true;
+      this.isExamEnded = true;
+      this.populateQuestions(true);
+    }
   }
 
   startTimer() {
@@ -70,23 +99,43 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   endExam() {
-    this.isExamEnded = true;
+    if (this.isReview) {
+      this.router.navigate(['/home']);
+      return;
+    };
     this.saveResponses();
   }
 
   saveResponses() {
     if (this.examForm.valid) {
       clearInterval(this.timerInterval);
-      this.router.navigate(['/home']);
+      const body = this.examForm.getRawValue();
+      const fireId = this.auth.currentUser?.uid
+      this.service.saveExamAttempt(fireId ?? '', body).subscribe(
+        respones => {
+          this.isExamEnded = true;
+          this.router.navigate(['/home']);
+          this.msg.add({
+            severity: 'success',
+            summary: 'Амжилттай',
+            detail: 'Амжилттай хадгаллаа',
+          });
+        },
+        error => {
+          this.msg.add({
+            severity: 'warn',
+            summary: 'Warning',
+            detail: 'Error occured saving response',
+          });
+        }
+      );
     } else {
       this.msg.add({
         severity: 'warn',
         summary: 'Warning',
-        detail: 'Please submit all of your questions',
+        detail: 'Бүх асуултыг бөглөнө үү!',
       });
     }
-
-    console.log(this.examForm.getRawValue());
   }
 
   onPageClick(question: number) {
@@ -161,14 +210,40 @@ export class DetailComponent implements OnInit, OnDestroy {
     return this.questions.controls[this.pageIndex - 1] as FormGroup;
   }
 
-  populateQuestions() {
-    this.exam.questions.forEach((questionData: any, index: number) => {
-      this.questions.push(
-        this.fb.group({
-          selectedAnswer: [null, Validators.required],
-          _id: [questionData._id, Validators.required],
-        })
-      );
-    });
+  populateQuestions(isReview: boolean) {
+    if (isReview) {
+      const responses = this.attempt.responses as any[];
+      console.log(responses);
+      this.exam.questions.forEach((questionData: any, index: number) => {
+        const responseQuestion = responses.find(res => res.question._id === questionData._id)
+        this.questions.push(
+          this.fb.group({
+            selectedAnswer: [responseQuestion.selectedAnswer, Validators.required],
+            _id: [questionData._id, Validators.required],
+            isCorrect: responseQuestion.isCorrect
+          })
+        );
+      });
+    } else {
+      this.exam.questions.forEach((questionData: any, index: number) => {
+        this.questions.push(
+          this.fb.group({
+            selectedAnswer: [null, Validators.required],
+            _id: [questionData._id, Validators.required],
+          })
+        );
+      });
+    }
+  }
+
+  getCheck(answer: any): any {
+    const responses = this.attempt.responses as any[];
+    const isCheck = responses.find(res => res.question._id === this.exam.questions[this.pageIndex - 1]['_id']).question.correctAnswer === answer;
+    return isCheck
+  }
+
+  onAnswerClick() {
+    this.answerString = '\\(\\begin{pmatrix}   1 & 0\\\\    -1 & 1 \\end{pmatrix}\\cdot \\begin{pmatrix}   1 & 3 & 5\\\\    2 & 4 & 6 \\end{pmatrix}\\) үржүүлэх үйлдлийг гүйцэтгэ.';
+    this.isVisible = true;
   }
 }

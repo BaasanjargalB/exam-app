@@ -8,6 +8,7 @@ import {
   signOut,
   authState,
   User,
+  UserCredential,
 } from '@angular/fire/auth';
 import { MessageService } from 'primeng/api';
 import { catchError, from, map, Observable, switchMap, tap, throwError } from 'rxjs';
@@ -18,6 +19,7 @@ import { catchError, from, map, Observable, switchMap, tap, throwError } from 'r
 export class AuthenticationService {
 
   currentUser: User | null = null;
+  signedUser: UserCredential | null = null;
   userRole: string | null = null;
 
   constructor(
@@ -34,6 +36,7 @@ export class AuthenticationService {
         this.userRole = "student";
         localStorage.setItem('userRole', this.userRole);
         const fireId = userCredential.user.uid;
+        this.signedUser = userCredential;
 
         // Send user data to the backend
         return this.http.post('http://localhost:3000/user/register', {
@@ -54,7 +57,7 @@ export class AuthenticationService {
 
             this.msg.add({
               severity: 'error',
-              summary: 'Error',
+              summary: 'Алдаа',
               detail: 'Failed to save user data in database. User registration was rolled back.',
             });
 
@@ -66,7 +69,7 @@ export class AuthenticationService {
         throwError(() => {
           this.msg.add({
             severity: 'error',
-            summary: 'Error',
+            summary: 'Алдаа',
             detail: this.translateFirebaseErrorMessage(error),
           });
           new Error(this.translateFirebaseErrorMessage(error))
@@ -81,7 +84,7 @@ export class AuthenticationService {
     ).pipe(
       switchMap((userCredential) => {
         const fireId = userCredential.user.uid;
-  
+        this.signedUser = userCredential;
         return this.http.get(`http://localhost:3000/user/role/${fireId}`).pipe(
           tap((response: any) => {
             this.userRole = response.role;
@@ -92,7 +95,7 @@ export class AuthenticationService {
           catchError((error) => {
             this.msg.add({
               severity: 'error',
-              summary: 'Error',
+              summary: 'Алдаа',
               detail: 'Failed to retrieve user information from the backend.',
             });
             return throwError(() => new Error(error));
@@ -103,7 +106,7 @@ export class AuthenticationService {
         throwError(() => {
           this.msg.add({
             severity: 'error',
-            summary: 'Error',
+            summary: 'Алдаа',
             detail: this.translateFirebaseErrorMessage(error),
           });
           new Error(this.translateFirebaseErrorMessage(error))
@@ -117,13 +120,14 @@ export class AuthenticationService {
       tap(() => {
         this.currentUser = null;
         this.userRole = null;
+        this.signedUser = null;
         localStorage.removeItem('userRole');
       }),
       catchError((error: FirebaseError) =>
         throwError(() => {
           this.msg.add({
             severity: 'error',
-            summary: 'Error',
+            summary: 'Алдаа',
             detail: this.translateFirebaseErrorMessage(error),
           });
           new Error(this.translateFirebaseErrorMessage(error))
@@ -138,7 +142,7 @@ export class AuthenticationService {
         throwError(() => {
           this.msg.add({
             severity: 'error',
-            summary: 'Error',
+            summary: 'Алдаа',
             detail: this.translateFirebaseErrorMessage(error),
           });
           new Error(this.translateFirebaseErrorMessage(error))
@@ -153,7 +157,7 @@ export class AuthenticationService {
         throwError(() => {
           this.msg.add({
             severity: 'error',
-            summary: 'Error',
+            summary: 'Алдаа',
             detail: this.translateFirebaseErrorMessage(error),
           });
           new Error(this.translateFirebaseErrorMessage(error))
@@ -163,8 +167,11 @@ export class AuthenticationService {
   }
 
   private translateFirebaseErrorMessage({ code, message }: FirebaseError) {
+    if (code === 'auth/invalid-email') {
+      return 'Зөв и-мэйл оруулна уу!'
+    }
     if (code === 'auth/invalid-credential') {
-      return 'Email or password is incorrect'
+      return 'И-мэйл эсвэл нууц үг буруу байна.'
     }
     if (code === 'auth/user-not-found') {
       return 'User not found.';

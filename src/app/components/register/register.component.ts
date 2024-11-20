@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { from } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +17,7 @@ export class RegisterComponent {
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
+    private msg: MessageService,
   ) {
 
   }
@@ -25,9 +27,18 @@ export class RegisterComponent {
       from(this.authenticationService.createUser({
         email: this.email,
         password: this.password,
-      })).subscribe({
-        next: () => this.router.navigate(['home']),
-      });
+      })).subscribe(
+        (res) => {
+          console.log(res);
+          console.log("-------");
+          this.msg.add({
+            severity: 'success',
+            summary: 'Амжилттай',
+            detail: 'Амжилттай бүртгүүллээ.',
+          });
+          this.router.navigate(['home']);
+        }
+      );
     }
   }
 }

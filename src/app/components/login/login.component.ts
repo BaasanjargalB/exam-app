@@ -30,8 +30,8 @@ export class LoginComponent {
           console.log("-------");
           this.msg.add({
             severity: 'success',
-            summary: 'Success',
-            detail: 'Amjilltai newterlee',
+            summary: 'Амжилттай',
+            detail: 'Амжилттай нэвтэрлээ.',
           });
           this.router.navigate(['home']);
         }

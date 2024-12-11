@@ -9,8 +9,9 @@ import { Auth, user } from '@angular/fire/auth';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
-  username: String = ''
+  username: String = '';
   constructor(public router: Router, private auth: AuthenticationService, private fireAuth: Auth) { }
+  role: String = '';
 
   ngOnInit() {
     user(this.fireAuth).subscribe((currentUser) => {
@@ -19,6 +20,7 @@ export class SidebarComponent {
       }
       this.username = currentUser.email ?? '';
     });
+    this.role = this.auth.getUserRole() ?? '';
   }
 
   onStatistic() {
@@ -27,6 +29,10 @@ export class SidebarComponent {
 
   onHome() {
     this.router.navigate(['home']);
+  }
+
+  onRequests() {
+    this.router.navigate(['requests']);
   }
 
   onLogout() {

@@ -44,11 +44,15 @@
                 <p-dropdown formControlName="category" [options]="categories" placeholder="Төрөл сонгох" />
               </div>
               <div class="form-element">
+                <label>Хариултын төрөл:</label>
+                <p-dropdown formControlName="answerType" [options]="answerTypes" optionLabel="label" optionValue="value" placeholder="Төрөл сонгох" (onChange)="onAnswerTypeChange($event, activeIndex)"/>
+              </div>
+              <div class="form-element">
                 <label>Бодлогын оноо:</label>
                 <p-inputNumber formControlName="questionPoint" />
               </div>
 
-              <div formArrayName="choices" class="choices">
+              <div *ngIf="getAnswerType(activeIndex).value === 'test'" formArrayName="choices" class="choices">
                 <div class="choice-head">
                   <label>Хариултууд:</label>
                   <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (click)="addChoice(i)" />
@@ -61,10 +65,25 @@
                 </div>
               </div>
 
-              <div *ngIf="getChoices(question).valid" class="form-element">
+              <div *ngIf="getChoices(question).valid && getAnswerType(activeIndex).value !== 'fill' && getChoices(question).length !== 0" class="form-element">
                 <label>Зөв хариулт:</label>
                 <p-dropdown formControlName="correctAnswer" [options]="getChoices(question).getRawValue()"
-                  placeholder="Хариулт сонгох" />
+                  placeholder="Хариулт сонгох">
+                  <ng-template let-item pTemplate="item">
+                    <app-math-jax-paragraph
+                      [mathString]="item"
+                    ></app-math-jax-paragraph>
+                  </ng-template>
+                  <ng-template let-item pTemplate="selectedItem">
+                    <app-math-jax-paragraph
+                      [mathString]="item"
+                    ></app-math-jax-paragraph>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <div *ngIf="getAnswerType(activeIndex).value === 'fill'" class="form-element">
+                <label>Зөв хариулт:</label>
+                <input pInputText formControlName="correctAnswer" type="text" />
               </div>
             </p-accordionTab>
           </p-accordion>
@@ -123,4 +142,14 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="overlay" *ngIf="isLoading">
+  <p-progressSpinner
+    *ngIf="isLoading"
+    styleClass="w-4rem h-4rem"
+    strokeWidth="4"
+    fill="var(--surface-ground)"
+    animationDuration=".5s"
+  ></p-progressSpinner>
 </div>

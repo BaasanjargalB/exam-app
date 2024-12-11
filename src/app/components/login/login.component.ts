@@ -26,8 +26,19 @@ export class LoginComponent {
       })
       .subscribe(
         (res) => {
-          console.log(res);
-          console.log("-------");
+          if (res.status === undefined || res.status === 'pending') {
+            this.auth.logOut().subscribe(
+              response => {
+                this.msg.add({
+                  severity: 'error',
+                  summary: 'Алдаа',
+                  detail: 'Таны бүртгэл идэвхгүй байна. Админд хандана уу!',
+                });
+              }
+            )
+            return;
+          }
+
           this.msg.add({
             severity: 'success',
             summary: 'Амжилттай',

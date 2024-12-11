@@ -24,3 +24,26 @@
 }
 
 $--primary-color: #7ED4AD;
+
+.custom-selection.p-selectbutton.p-buttonset.p-component {
+  & div:first-child {
+    width: 50%;
+  }
+  & div:last-child {
+    width: 50%;
+  }
+}
+
+.custom-selection.p-selectbutton .p-button.p-highlight {
+  background: #7ED4AD;
+  border-color: #7ED4AD;
+  color: #ffffff;
+}
+
+.custom-selection .p-button:focus {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #b2e5ce, 0 1px 2px 0 black;
+}
+
+.custom-drop.p-dropdown.p-component.p-inputwrapper.p-inputwrapper-filled {
+  width: 100%;
+}

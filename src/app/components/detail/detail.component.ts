@@ -21,6 +21,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     'flex items-center justify-center px-4 h-10 leading-tight text-white hover:text-white w-12 rounded-md';
   arr: number[] = [];
   answers: string[] = [];
+  isFill: boolean = false;
   exam: any;
   questionText: string = '';
 
@@ -59,8 +60,9 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.arr = this.exam.questions.map((x: any, i: any) => ++i);
     this.questionText = this.exam.questions[0].questionText;
     this.answers = this.exam.questions[0].choices;
+    this.isFill = this.exam.questions[0].answerType === 'fill';
 
-    if (this.authService.getUserRole() === 'admin') {
+    if (this.authService.getUserRole() === 'admin' || this.authService.getUserRole() === 'teacher') {
       this.adminStart();
     } else {
       this.studentStart();
@@ -74,7 +76,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   adminStart() {
     this.populateQuestions(false);
     this.isAdmin = true;
-
+    this.isExamEnded = true;
   }
 
   studentStart() {
@@ -99,7 +101,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   endExam() {
-    if (this.isReview) {
+    if (this.isReview || this.authService.getUserRole() !== 'student') {
       this.router.navigate(['/home']);
       return;
     };
@@ -107,6 +109,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   saveResponses() {
+    console.log(this.examForm);
     if (this.examForm.valid) {
       clearInterval(this.timerInterval);
       const body = this.examForm.getRawValue();
@@ -142,6 +145,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.pageIndex = question;
     this.questionText = this.exam.questions[this.pageIndex - 1].questionText;
     this.answers = this.exam.questions[this.pageIndex - 1].choices;
+    this.isFill = this.exam.questions[this.pageIndex - 1].answerType === 'fill';
   }
 
   onNextClick() {
@@ -149,6 +153,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       this.pageIndex++;
       this.questionText = this.exam.questions[this.pageIndex - 1].questionText;
       this.answers = this.exam.questions[this.pageIndex - 1].choices;
+      this.isFill = this.exam.questions[this.pageIndex - 1].answerType === 'fill';
     } else {
       this.endExam();
     }
@@ -159,6 +164,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       this.pageIndex--;
       this.questionText = this.exam.questions[this.pageIndex - 1].questionText;
       this.answers = this.exam.questions[this.pageIndex - 1].choices;
+      this.isFill = this.exam.questions[this.pageIndex - 1].answerType === 'fill';
     }
   }
 
@@ -218,7 +224,8 @@ export class DetailComponent implements OnInit, OnDestroy {
         const responseQuestion = responses.find(res => res.question._id === questionData._id)
         this.questions.push(
           this.fb.group({
-            selectedAnswer: [responseQuestion.selectedAnswer, Validators.required],
+            selectedAnswer: [{value: responseQuestion.selectedAnswer, disabled: true}, Validators.required],
+            correctAnswer: {value: responseQuestion.question.correctAnswer.replace(/&\d/g, ''), disabled: true},
             _id: [questionData._id, Validators.required],
             isCorrect: responseQuestion.isCorrect
           })
@@ -230,6 +237,7 @@ export class DetailComponent implements OnInit, OnDestroy {
           this.fb.group({
             selectedAnswer: [null, Validators.required],
             _id: [questionData._id, Validators.required],
+            answerType: [questionData.answerType, Validators.required],
           })
         );
       });

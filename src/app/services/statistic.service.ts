@@ -21,4 +21,19 @@ export class StatisticService {
       })
     );
   }
+
+  getStatisticById(fireId: String) {
+    return this.http.get(`${this.baseUrl}userExam/statistic/${fireId}`);
+  }
+
+  getStudents() {
+    return from(user(this.auth)).pipe(
+      mergeMap((currentUser) => {
+        if (!currentUser?.uid) {
+          throw new Error('User not authenticated');
+        }
+        return this.http.get(`${this.baseUrl}user/students/${currentUser.uid}`);
+      })
+    );
+  }
 }

@@ -35,6 +35,11 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { DialogModule } from 'primeng/dialog';
 import { StatisticComponent } from './components/statistic/statistic.component';
 import { ChartModule } from 'primeng/chart';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { RequestComponent } from './components/request/request.component';
+import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -50,6 +55,7 @@ import { ChartModule } from 'primeng/chart';
     SafeHtmlPipe,
     ExamCreateComponent,
     StatisticComponent,
+    RequestComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +78,10 @@ import { ChartModule } from 'primeng/chart';
     ScrollPanelModule,
     DialogModule,
     ChartModule,
+    SelectButtonModule,
+    TableModule,
+    TooltipModule,
+    ProgressSpinnerModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
   ],

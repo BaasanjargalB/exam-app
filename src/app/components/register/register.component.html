@@ -6,7 +6,26 @@
 				<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl register-title text-center">
 					Бүртгүүлэх
 				</h1>
-				<form class="space-y-4 md:space-y-6" action="#">
+				<div class="space-y-4 md:space-y-6" action="#">
+					<p-selectButton 
+						[options]="stateOptions" 
+						[(ngModel)]="role" 
+						optionLabel="label" 
+						optionValue="value" 
+						allowEmpty="false"
+						styleClass="custom-selection"
+						(click)="onRoleChange()" />
+					<div *ngIf="role !== 'teacher'">
+						<label for="email" class="block mb-2 text-sm font-medium text-gray-900 register-text">Багш</label>
+						<p-dropdown 
+							styleClass="custom-drop"
+							[options]="teachers" 
+							[(ngModel)]="selectedTeacher" 
+							optionLabel="username"
+							optionValue="_id"
+							placeholder="Багш сонгох"
+							[filter]="true"/>
+					</div>
 					<div>
 						<label for="email" class="block mb-2 text-sm font-medium text-gray-900 register-text">И-майл</label>
 						<input [(ngModel)]="email" type="email" name="email" id="email"
@@ -32,7 +51,7 @@
 					<p class="text-sm font-light register-text">
 						Бүртгэлтэй юу? <a href="#" class="font-medium hover:cursor-pointer underline register-text">Нэвтрэх</a>
 					</p>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>

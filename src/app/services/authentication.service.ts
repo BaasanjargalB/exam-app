@@ -28,12 +28,12 @@ export class AuthenticationService {
     private http: HttpClient,
   ) { }
 
-  createUser(params: SignIn): Observable<any> {
+  createUser(params: SignIn, role: string, teacherId: String): Observable<any> {
     return from(
       createUserWithEmailAndPassword(this.auth, params.email, params.password)
     ).pipe(
       switchMap((userCredential) => {
-        this.userRole = "student";
+        this.userRole = role;
         localStorage.setItem('userRole', this.userRole);
         const fireId = userCredential.user.uid;
         this.signedUser = userCredential;
@@ -41,8 +41,9 @@ export class AuthenticationService {
         // Send user data to the backend
         return this.http.post('http://localhost:3000/user/register', {
           username: params.email,
-          role: 'student',
-          fireId: fireId
+          role: role,
+          fireId: fireId,
+          teacherId: teacherId,
         }, {
           headers: {
             'Content-Type': 'application/json'
@@ -85,7 +86,7 @@ export class AuthenticationService {
       switchMap((userCredential) => {
         const fireId = userCredential.user.uid;
         this.signedUser = userCredential;
-        return this.http.get(`http://localhost:3000/user/role/${fireId}`).pipe(
+        return this.http.get(`http://localhost:3000/user/role-status/${fireId}`).pipe(
           tap((response: any) => {
             this.userRole = response.role;
             if (this.userRole) {

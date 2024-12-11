@@ -55,7 +55,7 @@
           <p-button *ngIf="isReview" class="ml-1" label="Бодолт" [text]="true" severity="success" (click)="onAnswerClick()"/>
         </div>
         <div class="px-24">
-          <ul [formGroup]="arrFormGroup">
+          <ul *ngIf="!isFill" [formGroup]="arrFormGroup">
             <li
               *ngFor="let answer of answers; let i = index"
               class="flex justify-start custom-li w-full ml-12 py-2"
@@ -82,6 +82,13 @@
               </div>
             </li>
           </ul>
+          <div *ngIf="isFill" [formGroup]="arrFormGroup" class="flex flex-col gap-2">
+            <input pInputText formControlName="selectedAnswer" type="text" />
+            <div *ngIf="isReview" class="flex items-center gap-2">
+              <label for="">Зөв хариу:</label>
+              <input pInputText formControlName="correctAnswer" type="text" />
+            </div>
+          </div>
         </div>
       </div>
       <div>

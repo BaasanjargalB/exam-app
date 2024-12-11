@@ -8,6 +8,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 4rem;
 
   .chart-container {
     width: 60vw;
